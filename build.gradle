@@ -1,0 +1,52 @@
+group 'com.example'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    //testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.testng', name: 'testng', version: '6.11'
+    testCompile 'com.codeborne:selenide:4.5'
+}
+
+
+
+
+test{
+
+    systemProperty "file.encoding", "utf-8"
+    systemProperty "webdriver.chrome.driver", "C:\\Program Files\\drivers\\chromedriver.exe"
+    systemProperty "webdriver.gecko.driver", "C:\\Program Files\\drivers\\geckodriver.exe"
+    useTestNG() {
+        file("src/test/com/example/SmokeTets.java")
+        //suiteXmlFiles << new File("src/test/resources/", "suite.xml")
+        systemProperties = [
+                browser: System.getProperty('browser', 'firefox'),
+        ]
+    }
+    //useJUnit()
+
+
+}
+
+
+tasks.withType(Test){
+    systemProperties = System.properties
+    testLogging{
+        lifecycle{
+            events 'started', 'skipped', 'failed', 'standard_error', 'standard_out'
+            exceptionFormat = "full"
+        }
+    }
+
+    outputs.upToDateWhen{false}
+
+
+}
